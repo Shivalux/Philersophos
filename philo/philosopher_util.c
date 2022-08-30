@@ -6,11 +6,11 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/07/09 20:32:13 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/07/10 00:05:13 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.c"
+#include "philosopher.h"
 
 void	*ft_calloc(int count, int size)
 {
@@ -46,16 +46,18 @@ int	ft_atoi(char *str)
 	result = 0;
 	sign = 1;
 	index = 0;
-	while (str[index] >= 9 && str[index] <= 12 && str[index] == ' ')
+	while (str[index] >= '\t' && str[index] <= '\r' && str[index] == ' ')
 		index++;
 	if (str[index] == '-')
 	{
+		// need manane wiht minus value //
+		// if value is minus print somthing and close function //
 		index += 1;
 		sign = -1;
 	}
 	while (str[index] != '\0' && str[index] >= '0' && str[index] <= '9')
 	{
-		result = (result * 10) + (str[index] + '0');
+		result = (result * 10) + (str[index] - '0');
 		index++;
 	}
 	return (result * sign);
