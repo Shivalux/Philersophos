@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/08/31 01:43:23 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/02 04:23:27 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void				*ft_philo_routine(void *table);
 unsigned long int	ft_timestamp_cal(t_table *table, int mode);
-void				ft_milisleep(t_table *table, int behave);
+void				ft_isleepnow(t_table *table, int behave);
 
 /* ./philo [number of philos] [time to die] [time to eat] [time to sleep] */
 	/* optional "number of time to eat" */
@@ -38,33 +38,52 @@ int	ft_check_arguments(char **argv)
 	}
 	return (42);
 }
-/* function initialise the t_table structure */
-int	ft_table_init(t_table *table, char **argv)
-{
-	int	index;
 
-	index = 0;
-	table->count = 0;
+int	ft_free_resource(t_table *table, int mode)
+{
+	int	count;
+
+	count = 0;
+	while (count < table->amount)
+	{
+		pthread_detach(table->philo[count].thread);
+		pthread_mutex_destroy(&table->philo[count++].mutex);
+	}
+	pthread_detach(table->thread);
+	free(table->philo);
+	free(table);
+	if (mode == FAILURE)
+		exit(EXIT_FAILURE);
+	return (0);
+}
+/* function initialise the t_table structure */
+t_table *ft_table_init(t_table *table, char **argv, int index)
+{
+	table = ft_calloc(sizeof(t_table), 1);
+	if (table == NULL)
+		return (0);
 	table->philo = (t_philo *)ft_calloc(sizeof(t_philo), ft_atoi(argv[1]));
 	if (table->philo == NULL)
+	{
+		free(table);
 		return (0);
+	}
 	table->amount = ft_atoi(argv[1]);
 	table->eat = ft_atoi(argv[3]) * 1000;
 	table->sleep = ft_atoi(argv[4]) * 1000;
-	table->life = ft_atoi(argv[2]) * 1000;
+	table->life_time = ft_atoi(argv[2]) * 1000;
+	table->philo_status = ALIVE;
 	if (argv[5] != NULL)
 		table->meal = ft_atoi(argv[5]);
+	else
+		table->meal = -1;
 	while (index < table->amount)
 	{
 		pthread_mutex_init(&table->philo[index].mutex, NULL);
-		table->philo[index].index = index;
 		table->philo[index].life = ft_atoi(argv[2]) * 1000;
-		table->philo[index].fork = 1;	//
-//		table->philo[index].meal = 0;	//
-//		table->philo[index].status = 1; //
 		index++;
 	}
-	return (42);
+	return (table);
 }
 
 void	*ft_philo_lifetime(void *elbat)
@@ -74,25 +93,27 @@ void	*ft_philo_lifetime(void *elbat)
 
 	table = (t_table *)elbat;
 	ft_timestamp_cal(table, TIME_REGIS);
-//	return (0);
 	while (0 < 1)
 	{
-		ft_milisleep(table, 1000);
+		ft_isleepnow(table, 1000);
 		index = 0;
 		while (index < table->amount)
 		{
 			table->philo[index].life -= 1000;
-	//		printf("index = %d, life = %d\n", index, table->philo[index].life);
 			if (table->philo[index].life <= 0)
 			{
-				printf("%lu ms, %d died\n", ft_timestamp_cal(table, TIME_CAL), index + 1);
+				table->philo_status = DEAD;
+				ft_philo_printf(table, index + 1, DEAD);
 				return (0);
 			}
+			if (table->philo_status == FULL)
+				return (0);
 			index++;
 		}
 	}
+	return (0);
 }
-
+/*
 void	ft_milisleep(t_table *table, int behave)
 {
 	unsigned long	time_sec;
@@ -114,76 +135,127 @@ void	ft_milisleep(t_table *table, int behave)
 //	printf("test = %ld\n", test);
 	while (1)
 	{
+		if (ft_timestamp_cal(&time, 3) >= behave)
+			break ;
+	}
+}*/
+void	*ft_philo_mealcount(void *elbta)
+{
+	int		count;
+	int		index;
+	t_table	*table;
+
+	table = (t_table *)elbta;
+	count = 0;
+	while (count != table->amount)
+	{
+		index = 0;
+		count = 0;
+		while (index < table->amount)
+		{
+			if (table->philo[index].meal == table->meal)
+				count++;
+			index++;
+		}
+	}
+	table->philo_status = FULL;
+	printf("=> \033[0;33m%lu\033[0m ms, \033[0;36mall philosopher is full\033[0m\n", ft_timestamp_cal(table, TIME_CAL));
+	return (0);
+}
+
+void	ft_isleepnow(t_table *table, int behave)
+{
+	t_table			time;
+
+	ft_timestamp_cal(&time, TIME_REGIS);
+	while (1 > 0)
+	{
 		if (ft_timestamp_cal(&time, TIME_CAL) >= behave / 1000)
 			break ;
 	}
+}
+
+int		ft_get_index(t_table *table)
+{
+	static int	count = 0;
+	int			index;
+
+	if (count + 1 > table->amount)
+		count = 1;
+	index = count;
+	if (count + 2 != table->amount)
+		count += 2;
+	else
+		count++;
+	while (table->timestamp_init == NO)
+	{
+	}
+	return (index);
 }
 
 void	*ft_philo_routine(void *elbat)
 {
 	t_table		*table;
 	int			index;
-	static int	count = 0;
 
 	table = (t_table *)elbat;
-	if (table->reset == 1)
-	{
-		count = 1;
-		table->reset = 0;
-	}
-	index = count;
-	count = count + 2;
+	index = ft_get_index(table);
 	printf("\033[1;33mindex = %d\033[0m\n", index);
-	while (table->save == 0)
-	{
-	}
 	while (1 > 0)
 	{	
-		// eat //
 		pthread_mutex_lock(&table->philo[index].mutex);
-			printf("%lu ms, %d has taken a fork\n", ft_timestamp_cal(table, TIME_CAL), table->philo[index].index + 1);
+		if (table->philo_status == ALIVE)
+			ft_philo_printf(table, index + 1, FORK_TAKEN);
 		pthread_mutex_lock(&table->philo[(index + 1) % table->amount].mutex);
-			printf("%lu ms, %d has taken a fork\n", ft_timestamp_cal(table, TIME_CAL), table->philo[index].index + 1);
-//		printf("index: %d => ready\n", index + 1);	
-		printf("%lu ms, %d is eating\n", ft_timestamp_cal(table, TIME_CAL), table->philo[index].index + 1);
-		ft_milisleep(table, table->eat);
-		table->philo[index].life = table->life;
-//		usleep(table->eat);
-		// checklife point // 
+		if (table->philo_status == ALIVE)
+			ft_philo_printf(table, index + 1, FORK_TAKEN);
+		if (table->philo_status == ALIVE)
+			ft_philo_printf(table, index + 1, EAT);
+		table->philo[index].meal++;
+		ft_isleepnow(table, table->eat);
+		table->philo[index].life = table->life_time;
 		pthread_mutex_unlock(&table->philo[index].mutex);
 		pthread_mutex_unlock(&table->philo[(index + 1) % table->amount].mutex);
-
-		// sleep //
-		printf("%lu ms, %d is sleeping\n", ft_timestamp_cal(table, TIME_CAL), table->philo[index].index + 1);
-//		usleep(table->sleep);
-		ft_milisleep(table, table->sleep);
-		// checklife point //
-
-		// think //
-		printf("%lu ms, %d is thinking\n", ft_timestamp_cal(table, TIME_CAL), table->philo[index].index + 1);
+		if (table->philo_status == ALIVE)
+			ft_philo_printf(table, index + 1, SLEEP);
+		ft_isleepnow(table, table->sleep);
+		if (table->philo_status == ALIVE)
+			ft_philo_printf(table, index + 1, THINK);
 	}
 }
 
-/* function checking status */
-/* return (1) no philosopher is dead | return (0) someone is dead */
-int	ft_check_philo(t_table *table)
+/* function print behavious of philosopher */
+/* following the behaveious form mode */
+void	ft_philo_printf(t_table *table, int index, int mode)
 {
-	int index;
-
-	index = 0;
-	while (index < table->amount)
+	if (mode == FORK_TAKEN && table->philo_status == ALIVE)
 	{
-		if (table->philo[index].life == 0)
-		{
-			printf(" %d is died\n", index);
-			return (0);
-		}
-		index++;
+		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m has taken"
+			" a fork.\n", ft_timestamp_cal(table, TIME_CAL), index);
 	}
-	return (1);
+	else if (mode == EAT && table->philo_status == ALIVE)
+	{
+		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m is eating.\n",
+			ft_timestamp_cal(table, TIME_CAL), index);
+	}
+	else if (mode == SLEEP && table->philo_status == ALIVE)
+	{
+		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m is sleeping.\n",
+			ft_timestamp_cal(table, TIME_CAL), index);
+	}
+	else if (mode == THINK && table->philo_status == ALIVE)
+	{
+		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m is thinking.\n",
+			ft_timestamp_cal(table, TIME_CAL), index);
+	}
+	else
+	{
+		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;31mdied."
+			"\033[0m\n", ft_timestamp_cal(table, TIME_CAL), index);
+	}
 }
 
-/* function about innit timestamp & calulate in millisec */
+/* function about init timestamp & calulate in millisec */
 /* mode(1)TIME_REGIS init timestamp | mode(2)TIME_CAL return time in millisec*/
 unsigned long int	ft_timestamp_cal(t_table *table, int mode)
 {
@@ -195,9 +267,9 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode)
 		gettimeofday(&time, NULL);
 		table->sec = time.tv_sec;
 		table->micro = time.tv_usec;
-		if (table->first_time == 0)
-			table->first_time = ft_timestamp_cal(table, TIME_CAL);
-		table->save = 1;
+//		if (table->first_time == 0)
+//			table->first_time = ft_timestamp_cal(table, TIME_CAL);
+		table->timestamp_init = YES;
 		return (0);
 	}
 	else if (mode == TIME_CAL)
@@ -205,28 +277,41 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode)
 		gettimeofday(&time, NULL);
 		result = ((time.tv_sec - table->sec) * 1000) + ((time.tv_usec / 1000) - (table->micro / 1000));
 		return (result);
-	}
+	}/*
 	else if (mode == 3)
 	{
 		gettimeofday(&time, NULL);
 		result = ((time.tv_sec - table->sec) * 1000) + (time.tv_usec - table->micro);
 		return (result);
 
-	}
+	}*/
 	return (-1);
+}
+void	ft_create_philo(t_table *table, int amount, int count)
+{
+	while (count + 1 < amount)
+	{
+		printf("count = %d\n",count);
+		if (pthread_create(&table->philo[count].thread, NULL, &ft_philo_routine, (void *)table) != 0)
+			ft_free_resource(table, FAILURE);
+		if (count + 2 != table->amount)
+			count += 2;
+		else
+		{
+			// //
+	//		table->reset = 3;
+			count++;
+		}
+	}
 }
 
 /* ./philo [number of philos] [time to die] [time to eat] [time to sleep] */
 	/* optional "number of time to eat" */
-
-//
 int	main(int argc, char **argv)
 {
 	t_table		*table;
-	int			count;
 	pthread_t	thread;
-
-	count = 0;
+// fix //
 	if (argc < 5 || argc > 6 || ft_check_arguments(argv) == 0)
 	{
 		// printf error and exit the program;
@@ -234,82 +319,38 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	table = (t_table *)ft_calloc(sizeof(t_table), 1);
+//	table = (t_table *)ft_calloc(sizeof(t_table), 1);
+//	if (table == NULL)
+//		return (EXIT_FAILURE);
+//	if (ft_table_init(table, argv) == 0)
+//	{
+//		free(table);
+//		return (EXIT_FAILURE);
+//	}
+	table = ft_table_init(table, argv, 0);
 	if (table == NULL)
-		return (EXIT_FAILURE);
-	if (ft_table_init(table, argv) == 0)
+		return (0);
+	if (argv[5] != NULL)
 	{
-		free(table);
-		return (EXIT_FAILURE);
+		if (pthread_create(&table->thread, NULL, &ft_philo_mealcount, (void *)table) < 0)
+			ft_free_resource(table, FAILURE);
 	}
-	while (table->count < table->amount)
-	{
-		printf("count = %d\n",table->count);
-		if (pthread_create(&table->philo[table->count].thread, NULL, &ft_philo_routine, (void *)table) != 0)
-		{
-			free(table->philo);
-			free(table);
-			return (EXIT_FAILURE);
-		}
-		table->count = table->count + 2;
-	}
+	//thread create//
+	ft_create_philo(table, table->amount, 0);
+	// time register and lifetime count//
 	printf("first_end\n");
 	if (pthread_create(&thread, NULL, &ft_philo_lifetime, (void *)table) != 0)
-	{
-		free(table->philo);
-		free(table);
-		return (EXIT_FAILURE);
-	}
-	while (table->save == 0)
+		ft_free_resource(table, FAILURE);
+	// wait time register//
+	while (table->timestamp_init == NO)
 	{
 	}
-	printf("go\n");
-	table->reset = 1;
-	table->count = 1;
-	while (table->count < table->amount)
-	{
-		if (pthread_create(&table->philo[table->count].thread, NULL, &ft_philo_routine, (void *)table) != 0)
-		{
-			free(table->philo);
-			free(table);
-			return (EXIT_FAILURE);
-		}
-		if (table->count + 1 == table->amount)
-			table->count++;
-		else
-			table->count = table->count + 2;
 
-	}
-/*
-	// pthread join //
-	int index = 0;
-	while (index < table->amount)
-	{	
-		if (pthread_join(table->philo[index++].thread, NULL) != 0)
-		{
-			free(table->philo);
-			free(table);
-			return (0);
-		}
-	}*/
-//	while (table->status != DEAD)
-//	{
-//	}
+	//thread create//
+	printf("go\n");
+	ft_create_philo(table, table->amount + 1,  1);
 	if (pthread_join(thread, NULL) != 0)
-	{
-		free(table->philo);
-		free(table);
-		return (EXIT_FAILURE);
-	}
-//	sleep(2);
-	//free section//
-	count = 0;
-	while (count < table->amount)
-	{
-		pthread_detach(table->philo[count].thread);
-		pthread_mutex_destroy(&table->philo[count++].mutex);
-	}
-	free(table->philo);
-	free(table);
+		ft_free_resource(table, FAILURE);
+	ft_free_resource(table, SUCCESS);
 	return (EXIT_SUCCESS);
 }

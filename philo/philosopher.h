@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/08/31 01:38:10 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/02 03:41:11 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,29 @@
 # define TIME_REGIS 1
 # define TIME_CAL 2
 
-# define ALIVE 1;
-# define DEAD 0;
+# define ALIVE 1
+# define DEAD 0
+# define FULL 2
+
+# define YES 1
+# define NO 0
+
+# define FORK_TAKEN 1
+# define EAT 2
+# define SLEEP 3
+# define THINK 4
+
+# define FAILURE 0
+# define SUCCESS 1
 typedef struct s_philo
 {
 	pthread_t		thread;
 	pthread_mutex_t mutex;
-	int				index;
+//	int				index;
 	int				life;	// lifepoint => (2)argument, if == 0 philo is dead;
-	int				fork;	// status of fork;
-	unsigned long	used_time;
-//	int				meal;	// number of time to eat => (optional)(5)argurment; 
-//	int				eat;	// status of philo => (3)argument 
-//	int				think;	// status of philo
-//	int				sleep;	// status of philo => (4)argument
+//	int				fork;	// status of fork;
+//	unsigned long	used_time;
+	int				meal;	// number of time to eat => (optional)(5)argurment; 
 
 }	t_philo;
 
@@ -47,16 +56,21 @@ typedef struct s_table
 	int					amount; // (1st) argument number of philosophers
 	unsigned long int	sec;	// timestamp
 	unsigned long int	micro;	// timestamp
-	int					count;
-	int					eat;	// (3st) argurment: eating time of philosophers
+	pthread_t			thread;
+//	int					count;
+	int					eat;	// (3rd) argurment: eating time of philosophers
 	int					sleep;	// (4th) argurment: sleeping time of philosophers
 	int					meal;	// (5th) argurment: max_meal (opional)
-	int					save;
-	int					life;
-	int					reset;
-	unsigned long	first_time;
+	int					timestamp_init;
+	int					life_time;	// (2nd) argument: liftpoint | revalue when finish eating;
+//	int					reset;
+	int					philo_status; // ALIVE: on philo still alive | DEAD: some philo is dead | FULL: all philosopher's meal reach max meal;
+//	unsigned long		first_time;
 }	t_table;
 
 void	*ft_calloc(int count, int size);
-int		ft_atoi(char *str);
+long	ft_atoi(char *str);
+void	ft_philo_printf(t_table *table, int index, int mode);
+void	ft_isleepnow(t_table *table, int behave);
+int		ft_free_resource(t_table *table, int mode);
 #endif

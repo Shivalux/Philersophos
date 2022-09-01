@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/07/10 00:05:13 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/01 00:41:39 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,12 @@ void	*ft_calloc(int count, int size)
 	}
 	return (result);
 }
-/*
-int	ft_isdigit(char c)
-{
-	
-	if (c < '0' || c > '9')
-		return (0);
-	return (1);
-}*/
 
-int	ft_atoi(char *str)
+long	ft_atoi(char *str)
 {
-	int	result;
-	int	sign;
-	int	index;
+	long	result;
+	int		sign;
+	int		index;
 
 	result = 0;
 	sign = 1;
@@ -62,3 +54,5 @@ int	ft_atoi(char *str)
 	}
 	return (result * sign);
 }
+
+
