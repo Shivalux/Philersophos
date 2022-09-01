@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/02 04:23:27 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/02 05:27:04 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,34 @@ void				ft_isleepnow(t_table *table, int behave);
 
 /* ./philo [number of philos] [time to die] [time to eat] [time to sleep] */
 	/* optional "number of time to eat" */
-int	ft_check_arguments(char **argv)
+void	ft_check_arguments(int argc, char **argv)
 {
 	int	index;
 	int	xedni;
 
 	index = 1;
+	if (argc < 5 || argc > 6)
+	{
+		printf("THE NUMBER OF THE AGUMENT IS WRONG :(\n");
+		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
+			" [time to sleep] [(optional): number of time to eat]\n");
+		exit(EXIT_FAILURE);
+	}
 	while (argv[index] != NULL)
 	{
 		xedni = 0;
 		while (argv[index][xedni] != '\0')
 		{
 			if (argv[index][xedni] < '0' || argv[index][xedni] > '9')
-				return (0);
+			{
+				printf("THE VALUE OF AGURMENTS MUST BE A POSITIVE NUMBER..\n");
+				exit(EXIT_FAILURE);
+			}
 			xedni++;
+			// check_argument_over or less than int //
 		}
-		// check_argument_over or less than int //
 		index++;
 	}
-	return (42);
 }
 
 int	ft_free_resource(t_table *table, int mode)
@@ -267,8 +276,6 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode)
 		gettimeofday(&time, NULL);
 		table->sec = time.tv_sec;
 		table->micro = time.tv_usec;
-//		if (table->first_time == 0)
-//			table->first_time = ft_timestamp_cal(table, TIME_CAL);
 		table->timestamp_init = YES;
 		return (0);
 	}
@@ -277,16 +284,10 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode)
 		gettimeofday(&time, NULL);
 		result = ((time.tv_sec - table->sec) * 1000) + ((time.tv_usec / 1000) - (table->micro / 1000));
 		return (result);
-	}/*
-	else if (mode == 3)
-	{
-		gettimeofday(&time, NULL);
-		result = ((time.tv_sec - table->sec) * 1000) + (time.tv_usec - table->micro);
-		return (result);
-
-	}*/
+	}
 	return (-1);
 }
+
 void	ft_create_philo(t_table *table, int amount, int count)
 {
 	while (count + 1 < amount)
@@ -297,11 +298,7 @@ void	ft_create_philo(t_table *table, int amount, int count)
 		if (count + 2 != table->amount)
 			count += 2;
 		else
-		{
-			// //
-	//		table->reset = 3;
 			count++;
-		}
 	}
 }
 
@@ -312,21 +309,7 @@ int	main(int argc, char **argv)
 	t_table		*table;
 	pthread_t	thread;
 // fix //
-	if (argc < 5 || argc > 6 || ft_check_arguments(argv) == 0)
-	{
-		// printf error and exit the program;
-		printf("WRONG AGUMENT :(\n");
-		return (EXIT_FAILURE);
-	}
-
-//	table = (t_table *)ft_calloc(sizeof(t_table), 1);
-//	if (table == NULL)
-//		return (EXIT_FAILURE);
-//	if (ft_table_init(table, argv) == 0)
-//	{
-//		free(table);
-//		return (EXIT_FAILURE);
-//	}
+	ft_check_arguments(argc, argv);
 	table = ft_table_init(table, argv, 0);
 	if (table == NULL)
 		return (0);
@@ -348,6 +331,7 @@ int	main(int argc, char **argv)
 
 	//thread create//
 	printf("go\n");
+	ft_isleepnow(table, table->eat);
 	ft_create_philo(table, table->amount + 1,  1);
 	if (pthread_join(thread, NULL) != 0)
 		ft_free_resource(table, FAILURE);
