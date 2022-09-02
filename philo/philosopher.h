@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 00:59:15 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 01:10:43 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@
 typedef struct s_philo
 {
 	pthread_t		thread;
-	pthread_mutex_t mutex;
+	pthread_mutex_t mutex_fork;
+	pthread_mutex_t	mutex_lifetime;
 	int				life;	// lifepoint => (2)argument, if == 0 philo is dead;
 	int				meal;	// number of time to eat => (optional)(5)argurment; 
 
@@ -51,7 +52,6 @@ typedef struct s_table
 {
 	t_philo				*philo;
 	pthread_t			thread;
-	pthread_mutex_t		mutex_lifetime;
 	unsigned long int	sec;	// timestamp
 	unsigned long int	micro;	// timestamp
 	int					amount; // (1st) argument number of philosophers
