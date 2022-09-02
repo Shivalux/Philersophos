@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/02 05:27:04 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 01:00:17 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int	ft_free_resource(t_table *table, int mode)
 		pthread_detach(table->philo[count].thread);
 		pthread_mutex_destroy(&table->philo[count++].mutex);
 	}
+	pthread_mutex_destroy(&table->mutex_lifetime);
 	pthread_detach(table->thread);
 	free(table->philo);
 	free(table);
@@ -82,6 +83,7 @@ t_table *ft_table_init(t_table *table, char **argv, int index)
 	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
 	table->philo_status = ALIVE;
+	pthread_mutex_init(&table->mutex_lifetime, NULL);
 	if (argv[5] != NULL)
 		table->meal = ft_atoi(argv[5]);
 	else
@@ -108,7 +110,9 @@ void	*ft_philo_lifetime(void *elbat)
 		index = 0;
 		while (index < table->amount)
 		{
+			pthread_mutex_lock(&table->mutex_lifetime);
 			table->philo[index].life -= 1000;
+			pthread_mutex_unlock(&table->mutex_lifetime);
 			if (table->philo[index].life <= 0)
 			{
 				table->philo_status = DEAD;
@@ -220,9 +224,11 @@ void	*ft_philo_routine(void *elbat)
 			ft_philo_printf(table, index + 1, FORK_TAKEN);
 		if (table->philo_status == ALIVE)
 			ft_philo_printf(table, index + 1, EAT);
-		table->philo[index].meal++;
 		ft_isleepnow(table, table->eat);
+		table->philo[index].meal++;
+		pthread_mutex_lock(&table->mutex_lifetime);
 		table->philo[index].life = table->life_time;
+		pthread_mutex_unlock(&table->mutex_lifetime);
 		pthread_mutex_unlock(&table->philo[index].mutex);
 		pthread_mutex_unlock(&table->philo[(index + 1) % table->amount].mutex);
 		if (table->philo_status == ALIVE)

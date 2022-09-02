@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/02 04:48:07 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 00:59:15 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_table
 {
 	t_philo				*philo;
 	pthread_t			thread;
+	pthread_mutex_t		mutex_lifetime;
 	unsigned long int	sec;	// timestamp
 	unsigned long int	micro;	// timestamp
 	int					amount; // (1st) argument number of philosophers
