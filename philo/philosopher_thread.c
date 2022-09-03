@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 22:52:32 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 23:16:14 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	*ft_philo_lifetime(void *table)
 			pthread_mutex_lock(&((t_table *)table)->philo[i].mutex_lifetime);
 			((t_table *)table)->philo[i].life -= 1000;
 			pthread_mutex_unlock(&((t_table *)table)->philo[i].mutex_lifetime);
-			if (((t_table *)table)->philo[i].life < 0)
+			if (((t_table *)table)->philo[i].life <= 0)
 			{
 				((t_table *)table)->philo_status = DEAD;
 				ft_philo_printf(((t_table *)table), i + 1, DEAD);
