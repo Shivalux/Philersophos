@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 18:30:30 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 19:42:18 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	ft_create_philo(t_table *table, int amount, int count)
 	}
 	if (amount == 1 && count == 0)
 	{
-		printf("55555\n");
 		if (pthread_create(&table->philo[count].thread, NULL, \
 			&ft_philo_routine, (void *)table) != 0)
 			ft_free_resource(table, FAILURE);
@@ -101,11 +100,10 @@ int	main(int argc, char **argv)
 	t_table		*table;
 	pthread_t	thread;
 
-	table = NULL;
 	ft_check_arguments(argc, argv);
-	table = ft_table_init(table, argv, 0);
+	table = ft_table_init(NULL, argv, 0);
 	if (table == NULL)
-		return (0);
+		return (EXIT_FAILURE);
 	if (argv[5] != NULL)
 	{
 		if (pthread_create(&table->thread, NULL, \
