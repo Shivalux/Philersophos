@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 23:16:14 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 23:30:48 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*ft_philo_routine(void *elbat)
 
 	table = (t_table *)elbat;
 	i = ft_get_index(table);
-	while (1 > 0)
+	while (table->philo_status != FULL && table->philo_status != DEAD)
 	{
 		pthread_mutex_lock(&table->philo[i].mutex_fork);
 		ft_philo_printf(table, i + 1, FORK_TAKEN);
@@ -37,6 +37,7 @@ void	*ft_philo_routine(void *elbat)
 		ft_isleepnow(table->sleep);
 		ft_philo_printf(table, i + 1, THINK);
 	}
+	return (0);
 }
 
 int	ft_get_index(t_table *table)
@@ -131,7 +132,7 @@ void	ft_philo_printf(t_table *table, int index, int mode)
 		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m is thinking.\n",
 			ft_timestamp_cal(table, TIME_CAL), index);
 	}
-	else if (mode == DEAD)
+	else if (mode == DEAD && table->philo_status == DEAD)
 	{
 		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;31mdied."
 			"\033[0m\n", ft_timestamp_cal(table, TIME_CAL), index);
