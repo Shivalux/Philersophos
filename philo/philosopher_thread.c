@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 20:40:58 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 21:28:29 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	*ft_philo_mealcount(void *elbat)
 		count = 0;
 		while (index < table->amount)
 		{
-			if (table->philo[index].meal == table->meal)
+			if (table->philo[index].meal >= table->meal)
 				count++;
 			index++;
 		}
