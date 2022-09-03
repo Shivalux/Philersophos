@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 20:39:37 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 22:50:47 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_table
 {
 	t_philo				*philo;
 	pthread_t			thread;
+	pthread_mutex_t		mutex_index;
 	unsigned long int	sec;
 	unsigned long int	micro;
 	unsigned long int	life_time;

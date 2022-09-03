@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 19:42:18 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 22:50:15 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
 	table->philo_status = SLEEP;
+	table->meal = -1;
+	pthread_mutex_init(&table->mutex_index, NULL);
 	if (argv[5] != NULL)
 		table->meal = ft_atoi(argv[5]);
-	else
-		table->meal = -1;
 	while (index < table->amount)
 	{
 		pthread_mutex_init(&table->philo[index].mutex_fork, NULL);

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 21:28:29 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 22:52:32 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	ft_get_index(t_table *table)
 	static int	count = 0;
 	int			index;
 
+	pthread_mutex_lock(&table->mutex_index);
 	if (count + 1 > table->amount)
 		count = 1;
 	index = count;
@@ -54,6 +55,7 @@ int	ft_get_index(t_table *table)
 	while (table->philo_status == SLEEP)
 	{
 	}
+	pthread_mutex_unlock(&table->mutex_index);
 	return (index);
 }
 
