@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/01 00:41:39 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/03 18:30:12 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ void	*ft_calloc(int count, int size)
 	return (result);
 }
 
-long	ft_atoi(char *str)
+unsigned long int	ft_atoi(char *str)
 {
-	long	result;
-	int		sign;
-	int		index;
+	long int	result;
+	int			sign;
+	int			index;
 
 	result = 0;
 	sign = 1;
@@ -42,8 +42,6 @@ long	ft_atoi(char *str)
 		index++;
 	if (str[index] == '-')
 	{
-		// need manane wiht minus value //
-		// if value is minus print somthing and close function //
 		index += 1;
 		sign = -1;
 	}
@@ -55,4 +53,59 @@ long	ft_atoi(char *str)
 	return (result * sign);
 }
 
+/* function about init timestamp & calulate in millisec */
+/* mode(1)TIME_REGIS init timestamp | mode(2)TIME_CAL return time in millisec*/
+unsigned long int	ft_timestamp_cal(t_table *table, int mode)
+{
+	struct timeval		time;
+	unsigned long int	result;
 
+	if (mode == TIME_REGIS)
+	{
+		gettimeofday(&time, NULL);
+		table->sec = time.tv_sec;
+		table->micro = time.tv_usec;
+		table->philo_status = ALIVE;
+		return (0);
+	}
+	else if (mode == TIME_CAL)
+	{
+		gettimeofday(&time, NULL);
+		result = ((time.tv_sec - table->sec) * 1000)
+			+ ((time.tv_usec / 1000) - (table->micro / 1000));
+		return (result);
+	}
+	return (-1);
+}
+
+void	ft_isleepnow(unsigned long int behave)
+{
+	t_table			time;
+
+	ft_timestamp_cal(&time, TIME_REGIS);
+	while (1 > 0)
+	{
+		if (ft_timestamp_cal(&time, TIME_CAL) >= behave / 1000)
+			break ;
+	}
+}
+
+int	ft_free_resource(t_table *table, int mode)
+{
+	int	count;
+
+	count = 0;
+	while (count < table->amount)
+	{
+		pthread_detach(table->philo[count].thread);
+		pthread_mutex_destroy(&table->philo[count].mutex_fork);
+		pthread_mutex_destroy(&table->philo[count].mutex_lifetime);
+		count++;
+	}
+	pthread_detach(table->thread);
+	free(table->philo);
+	free(table);
+	if (mode == FAILURE)
+		exit(EXIT_FAILURE);
+	return (0);
+}

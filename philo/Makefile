@@ -6,12 +6,13 @@
 #    By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/08 00:28:26 by sharnvon          #+#    #+#              #
-#    Updated: 2022/07/08 14:36:32 by sharnvon         ###   ########.fr        #
+#    Updated: 2022/09/03 18:40:14 by sharnvon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
+PTHREAD = -pthread
 RM = rm -rf
 NORM = norminette
 NFLAG_C = -R CheckForbiddenSourceHeader
@@ -21,21 +22,24 @@ NFLAG_H = -R CheckDefine
 NAME = philo
 LIB = philospher.a
 HEAD = philosopher.h
-MAIN = philosopher.c
-SRCS =
-OBJS = $(SRC:.c=.o)
+#MAIN = philosopher.c
+SRCS = philosopher.c \
+	   philosopher_thread.c \
+	   philosopher_util.c
+OBJS = $(SRCS:.c=.o)
 
-RESET = 
-RED =
-GREEN =
-BLUE = 
+RESET = \033[0m
+RED = \033[0;31m
+GREEN =\033[0;32m
+BLUE = \033[0;34m
+
 
 all: $(OBJS)
 	@echo "$(RED)-->$(RESET) object files was made $(RED)<--$(RESET)"
-	ar -rc $(LIB) $(OBJS)
-	@echo "/t$(RED)-->$(RESET) $(GREEN)library file was made$(RESET) :) $(RED)<--$(RESET)"
-	$(CC) $(CFLAGS) $(MAIN) $(LIB)
-	@echo "/t/t$(RED)-->$(RESET) $(GREEN)progarm "philo" complete$(RESET) $(RED)<--$(RESET)"
+	@ar -rc $(LIB) $(OBJS)
+	@echo " $(RED)-->$(RESET) $(GREEN)library files was made$(RESET) :)$(RED)<--$(RESET)"
+	@$(CC) $(CFLAGS) $(PTHREAD) $(LIB) -o $(NAME)
+	@echo "  $(RED)-->$(RESET) $(GREEN)program \"philo\" complied :)$(RESET) $(RED)<--$(RESET)"
 
 .PHONY: all
 
