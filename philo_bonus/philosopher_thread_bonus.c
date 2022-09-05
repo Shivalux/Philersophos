@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 05:37:21 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 05:43:12 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	*ft_philo_lifetime(void *elbat)
 		//	pthread_mutex_unlock(&((t_table *)table)->philo[i].mutex_lifetime);
 			if (((t_table *)table)->philo[table->count].life <= 0)
 			{
-			//	((t_table *)table)->philo_status = DEAD;
+				((t_table *)table)->philo_status = DEAD;
 				ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
 //				printf("(lifetime)kill) count = %d\n", table->count);
 //				kill(table->pid[table->count - 1], SIGINT);

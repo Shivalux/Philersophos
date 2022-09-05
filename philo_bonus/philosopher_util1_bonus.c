@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 00:55:51 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 05:54:58 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	ft_isleepnow(unsigned long int behave)
 int	ft_free_resource(t_table *table, int mode)
 {
 	int	count;
+	char	*sem_life;
 
 	count = 0;
 	if (table->philo_status == FULL)
@@ -101,8 +102,10 @@ int	ft_free_resource(t_table *table, int mode)
 	while (count < table->amount)
 	{
 		pthread_detach(table->philo[count].thread);
-		sem_unlink(ft_strjoin(SEMLIFE, ft_positive_itoa(count)));
+		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(count));
+		sem_unlink(sem_life);
 		sem_close(table->philo[count].sem_lifetime);
+		free(sem_life);
 //		pthread_mutex_destroy(&table->philo[count].mutex_fork);
 //		pthread_mutex_destroy(&table->philo[count].mutex_lifetime);
 		count++;

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 05:38:09 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 05:58:03 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void	ft_check_arguments(int argc, char **argv)
 /* function initialise the t_table structure */
 t_table	*ft_table_init(t_table *table, char **argv, int index)
 {
-	table = ft_calloc(sizeof(t_table), 1);
+	char	*sem_life;
+
+	table = (t_table *)ft_calloc(sizeof(t_table), 1);
 	if (table == NULL)
 		return (0);
 	table->philo = (t_philo *)ft_calloc(sizeof(t_philo), ft_atoi(argv[1]));
@@ -55,7 +57,7 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 		free(table);
 		return (0);
 	}
-
+	table->amount = ft_atoi(argv[1]);
 	table->pid = (int *)ft_calloc(sizeof(int), table->amount);
 	if (table->pid == NULL)
 	{
@@ -63,7 +65,6 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 		free(table);
 		return (0);
 	}
-	table->amount = ft_atoi(argv[1]);
 	table->eat = ft_atoi(argv[3]) * 1000;
 	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
@@ -78,9 +79,11 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 	{
 	//	pthread_mutex_init(&table->philo[index].mutex_fork, NULL);
 	//	pthread_mutex_init(&table->philo[index].mutex_lifetime, NULL);
-		sem_unlink(ft_strjoin(SEMLIFE, ft_positive_itoa(index))); //
-		table->philo[index].sem_lifetime = sem_open(ft_strjoin(SEMLIFE, ft_positive_itoa(index)), O_CREAT | O_EXCL, 0644, 1);
+		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index)); //
+		sem_unlink(sem_life); //
+		table->philo[index].sem_lifetime = sem_open(sem_life , O_CREAT | O_EXCL, 0644, 1);
 		table->philo[index++].life = ft_atoi(argv[2]) * 1000;
+		free(sem_life);
 	}
 	return (table);
 }
