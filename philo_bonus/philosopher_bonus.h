@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 08:01:10 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 19:22:59 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 
 # define SEMLIFE "/semaphore_lifetime"
 # define SEMFORK "/semaphore_fork"
+# define SEMDEAD "/semaphore_dead"
 
 
 typedef struct s_philo
@@ -53,15 +54,17 @@ typedef struct s_philo
 	sem_t				*sem_lifetime;
 //	pthread_mutex_t		mutex_fork;
 //	pthread_mutex_t		mutex_lifetime;
-	long int			life;
-	int					meal;
+//	long int			life;
+//	int					meal;
 }	t_philo;
 
 typedef struct s_table
 {
-	t_philo				*philo;
+//	t_philo				*philo;
 	pthread_t			thread;
 	sem_t				*sem_fork;
+	sem_t				*sem_dead;
+	sem_t				**sem_lifetime;
 	unsigned long int	sec;
 	unsigned long int	micro;
 	unsigned long int	life_time;
@@ -70,8 +73,10 @@ typedef struct s_table
 	unsigned long int	philo_status;
 	int					amount;
 	int					meal;
-	pid_t				*pid;
 	int					count;
+	int					max_meal;//
+	long int			life;//
+	pid_t				*pid;
 }	t_table;
 
 void				*ft_calloc(int count, int size);
@@ -81,10 +86,10 @@ void				ft_philo_printf(t_table *table, int index, int mode);
 void				ft_isleepnow(unsigned long int behave);
 void				ft_check_argurment(int argc, char **argv);
 void				ft_philo_routine(t_table *table);
-//void				ft_create_philo(t_table *table, int amount, int count);
+int					ft_create_philo(t_table *table);
 void				*ft_philo_lifetime(void *elbat);
 void				*ft_philo_mealcount(void *elbat);
-t_table				*ft_table_init(t_table *table, char **argv, int index);
+//t_table				*ft_table_init(t_table *table, char **argv, int index);
 int					ft_free_resource(t_table *table, int mode);
 int					ft_get_index(t_table *table);
 int					ft_strslen(char *str1, char *str2);

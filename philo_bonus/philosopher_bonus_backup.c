@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 19:24:11 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 15:29:57 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,46 +43,73 @@ void	ft_check_arguments(int argc, char **argv)
 	}
 }
 
+
 /* function initialise the t_table structure */
-t_table	*ft_table_init(t_table *table, char **argv, int index)
+/*t_table	ft_table_init(t_table table, char **argv, int index)
 {
 	char	*sem_life;
 
-	table = (t_table *)ft_calloc(sizeof(t_table), 1);
-	if (table == NULL)
+	table.amount = ft_atoi(argv[1]);
+	table.pid = (int *)ft_calloc(sizeof(int), table.amount);
+	if (table.pid == NULL)
 		return (0);
-	table->amount = ft_atoi(argv[1]);
-	table->pid = (int *)ft_calloc(sizeof(int), table->amount);
-	if (table->pid == NULL)
+	table.sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table.amount);
+	if (table.sem_lifetime == NULL)
 	{
-		free(table);
+		free(table.pid);
 		return (0);
 	}
-	table->sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table->amount);
-	if (table->sem_lifetime == NULL)
-	{
-		free(table->pid);
-		free(table);
-		return (0);
-	}
-	table->eat = ft_atoi(argv[3]) * 1000;
-	table->sleep = ft_atoi(argv[4]) * 1000;
-	table->life_time = ft_atoi(argv[2]) * 1000;
-	table->philo_status = SLEEP;
-	table->life = ft_atoi(argv[2]) * 1000;
+	table.eat = ft_atoi(argv[3]) * 1000;
+	table.sleep = ft_atoi(argv[4]) * 1000;
+	table.life_time = ft_atoi(argv[2]) * 1000;
+	table.philo_status = SLEEP;
+	table.life = ft_atoi(argv[2]) * 1000;
 	if (argv[5] != NULL)
-		table->max_meal = ft_atoi(argv[5]);
+		table.max_meal = ft_atoi(argv[5]);
 	else
-		table->max_meal = -1;
-	sem_unlink(SEMDEAD);
-	table->sem_dead = sem_open(SEMDEAD, O_CREAT | O_EXCL, 0644, 1);
+		table.max_meal = -1;
 	sem_unlink(SEMFORK);
-	table->sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table->amount);
-	while (index < table->amount)
+	table.sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table.amount);
+	while (index < table.amount)
 	{
 		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index)); //
 		sem_unlink(sem_life); //
-		table->sem_lifetime[index++] = sem_open(sem_life , O_CREAT | O_EXCL, 0644, 1);
+		table.sem_lifetime[index] = sem_open(sem_life , O_CREAT | O_EXCL, 0644, 1);
+		free(sem_life);
+	}
+	return (table);
+}*/
+/* function initialise the t_table structure */
+t_table	ft_table_init(t_table table, char **argv, int index)
+{
+	char	*sem_life;
+
+	table.amount = ft_atoi(argv[1]);
+	table.pid = (int *)ft_calloc(sizeof(int), table.amount);
+	if (table.pid == NULL)
+		return (0);
+	table.sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table.amount);
+	if (table.sem_lifetime == NULL)
+	{
+		free(table.pid);
+		return (0);
+	}
+	table.eat = ft_atoi(argv[3]) * 1000;
+	table.sleep = ft_atoi(argv[4]) * 1000;
+	table.life_time = ft_atoi(argv[2]) * 1000;
+	table.philo_status = SLEEP;
+	table.life = ft_atoi(argv[2]) * 1000;
+	if (argv[5] != NULL)
+		table.max_meal = ft_atoi(argv[5]);
+	else
+		table.max_meal = -1;
+	sem_unlink(SEMFORK);
+	table.sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table.amount);
+	while (index < table.amount)
+	{
+		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index)); //
+		sem_unlink(sem_life); //
+		table.sem_lifetime[index] = sem_open(sem_life , O_CREAT | O_EXCL, 0644, 1);
 		free(sem_life);
 	}
 	return (table);
@@ -146,8 +173,8 @@ void	ft_waiting_child(t_table *table, int count)
 
 //	dead = 0;
 	meal = 0;
-//	pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
-//	pthread_detach(table->thread);
+	pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
+	pthread_detach(table->thread);
 	while (waitpid(-1, &status, 0) != -1 || errno != ECHILD)
 	{
 		if (WEXITSTATUS(status) <= 1)
@@ -180,19 +207,19 @@ int	main(int argc, char **argv)
 	int			count;
 
 	ft_check_arguments(argc, argv);
-	table = ft_table_init(NULL, argv, 0);
+	table = ft_table_init(table, argv, 0);
 	if (table == NULL)
 		return (EXIT_FAILURE);
-	count = ft_create_philosopher(table);
-	if (count < table->amount && table->pid[count] == 0)
+	count = ft_create_philosopher(&table);
+	if (count < table.amount && table.pid[count] == 0)
 	{
-		table->count = count;
+		table.count = count;
 	//	ft_isleepnow(count * 50);
-		ft_philo_routine(table);	
+		ft_philo_routine(&table);	
 	}
 	else
 	{
-		ft_waiting_child(table, count);
+		ft_waiting_child(&table, count);
 	}
 	return (EXIT_SUCCESS);
 }

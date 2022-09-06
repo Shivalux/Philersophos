@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 08:19:24 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 19:23:42 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,20 @@ void	*ft_philo_lifetime(void *elbat)
 //		while (++i < ((t_table *)table)->amount)
 //		{
 		//	pthread_mutex_lock(&((t_table *)table)->philo[i].mutex_lifetime);
-			sem_wait(((t_table *)table)->philo[table->count].sem_lifetime);
-			((t_table *)table)->philo[table->count].life -= 1000;
-			sem_post(((t_table *)table)->philo[table->count].sem_lifetime);
+			sem_wait(((t_table *)table)->sem_lifetime[table->count]);
+			((t_table *)table)->life -= 1000;
+			sem_post(((t_table *)table)->sem_lifetime[table->count]);
+		//	sem_post(((t_table *)table)->philo[table->count].sem_lifetime);
 		//	pthread_mutex_unlock(&((t_table *)table)->philo[i].mutex_lifetime);
-			if (((t_table *)table)->philo[table->count].life <= 0)
+			if (((t_table *)table)->life <= 0)
 			{
+				sem_wait(table->sem_dead);
 				((t_table *)table)->philo_status = DEAD;
 				ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
 //				printf("(lifetime)kill) count = %d\n", table->count);
 //				kill(table->pid[table->count - 1], SIGINT);
-				exit(EXIT_FAILURE);
+				exit(EXIT_SUCCESS);	
+			//	exit(table->count + 1);
 			}
 //			if (((t_table *)table)->philo_status == FULL)
 //				return (0);
