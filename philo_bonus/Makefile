@@ -6,7 +6,7 @@
 #    By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/08 00:28:26 by sharnvon          #+#    #+#              #
-#    Updated: 2022/09/06 20:13:26 by sharnvon         ###   ########.fr        #
+#    Updated: 2022/09/06 22:46:45 by sharnvon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ NFLAG_H = -R CheckDefine
 
 NAME = philo_bonus
 LIB = philospher_bonus.a
-HEAD = philosopher_bouns.h
+HEAD = philosopher_bonus.h
 SRCS = philosopher_bonus.c \
 	   philosopher_thread_bonus.c \
 	   philosopher_util1_bonus.c \

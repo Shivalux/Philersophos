@@ -12,6 +12,37 @@
 
 #include "philosopher_bonus.h"
 
+/* ./philo [number of philos] [time to die] [time to eat] [time to sleep] */
+	/* optional "number of time to eat" */
+void	ft_check_arguments(int argc, char **argv)
+{
+	int	index;
+	int	xedni;
+
+	index = 1;
+	if (argc < 5 || argc > 6)
+	{
+		printf("ERROR: THE NUMBER OF THE AGUMENT IS WRONG :(\n");
+		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
+			" [time to sleep] [(optional): number of time to eat]\n");
+		exit(EXIT_FAILURE);
+	}
+	while (argv[index] != NULL)
+	{
+		xedni = 0;
+		while (argv[index][xedni] != '\0')
+		{
+			if (argv[index][xedni] < '0' || argv[index][xedni] > '9')
+			{
+				printf("ERROR: VALUE OF AGURMENTS MUST BE POSITIVE NUMBER..\n");
+				exit(EXIT_FAILURE);
+			}
+			xedni++;
+		}
+		index++;
+	}
+}
+
 int	ft_strslen(char *str1, char *str2)
 {
 	int	count;

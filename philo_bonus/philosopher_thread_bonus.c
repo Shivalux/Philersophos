@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 21:40:53 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 22:26:04 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void	*ft_philo_lifetime(void *elbat)
 				sem_wait(table->sem_print);
 			printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;31m"
 				"died.\033[0m\n", ft_timestamp_cal(table, TIME_CAL), index);
-	//		((t_table *)table)->philo_status = DEAD;
-	//		ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
 			exit(1);
 		}
 	}
@@ -65,9 +63,32 @@ void	ft_philo_printf(t_table *table, int index, int mode)
 			ft_timestamp_cal(table, TIME_CAL), index);
 	}
 	sem_post(table->sem_print);
-/*	else if (mode == DEAD)
+}
+
+t_table	*ft_allocate_data(t_table *table, char **argv)
+{
+	table = (t_table *)ft_calloc(sizeof(t_table), 1);
+	if (table == NULL)
+		return (0);
+	table->amount = ft_atoi(argv[1]);
+	table->pid = (int *)ft_calloc(sizeof(int), table->amount);
+	if (table->pid == NULL)
 	{
-		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;31mdied."
-			"\033[0m\n", ft_timestamp_cal(table, TIME_CAL), index);
-	}*/
+		free(table);
+		return (0);
+	}
+	table->sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table->amount);
+	if (table->sem_lifetime == NULL)
+	{
+		free(table->pid);
+		free(table);
+		return (0);
+	}
+	table->eat = ft_atoi(argv[3]) * 1000;
+	table->sleep = ft_atoi(argv[4]) * 1000;
+	table->life_time = ft_atoi(argv[2]) * 1000;
+	table->philo_status = SLEEP;
+	table->life = ft_atoi(argv[2]) * 1000;
+	table->max_meal = -1;
+	return (table);
 }
