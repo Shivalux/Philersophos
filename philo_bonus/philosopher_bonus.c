@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 20:25:38 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 21:41:33 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ t_table	*ft_allocate_data(t_table *table, char **argv)
 		free(table);
 		return (0);
 	}
+	table->eat = ft_atoi(argv[3]) * 1000;
+	table->sleep = ft_atoi(argv[4]) * 1000;
 	return (table);
 }
 
@@ -91,8 +93,8 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 		free(table);
 		return (0);
 	}*/
-	table->eat = ft_atoi(argv[3]) * 1000;
-	table->sleep = ft_atoi(argv[4]) * 1000;
+//	table->eat = ft_atoi(argv[3]) * 1000;
+//	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
 	table->philo_status = SLEEP;
 	table->life = ft_atoi(argv[2]) * 1000;
@@ -103,6 +105,8 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 	table->sem_dead = sem_open(SEMDEAD, O_CREAT | O_EXCL, 0644, 1);
 	sem_unlink(SEMFORK);
 	table->sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table->amount);
+	sem_unlink(SEPRINT);
+	table->sem_print = sem_open(SEPRINT, O_CREAT | O_EXCL, 0644, table->amount);
 	while (index < table->amount)
 	{
 		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index));
@@ -123,10 +127,14 @@ void	ft_philo_routine(t_table *table)
 	while (table->philo_status != DEAD)
 	{
 		sem_wait(table->sem_fork);
+//		sem_wait(table->sem_print);
 		ft_philo_printf(table, table->count + 1, FORK_TAKEN);
+//		sem_post(table->sem_print);
 		sem_wait(table->sem_fork);
+//		sem_wait(table->sem_print);
 		ft_philo_printf(table, table->count + 1, FORK_TAKEN);
 		ft_philo_printf(table, table->count + 1, EAT);
+//		sem_post(table->sem_print);
 		ft_isleepnow(table->eat);
 		sem_wait(table->sem_lifetime[table->count]);
 		table->life = table->life_time;
@@ -136,9 +144,13 @@ void	ft_philo_routine(t_table *table)
 		sem_post(table->sem_fork);
 		if (table->max_meal != -1 && table->meal >= table->max_meal)
 			break ;
+//		sem_wait(table->sem_print);
 		ft_philo_printf(table, table->count + 1, SLEEP);
+//		sem_post(table->sem_print);
 		ft_isleepnow(table->sleep);
+//		sem_wait(table->sem_print);
 		ft_philo_printf(table, table->count + 1, THINK);
+//		sem_post(table->sem_print);
 	}
 }
 
@@ -210,3 +222,7 @@ int	main(int argc, char **argv)
 	}
 	return (EXIT_SUCCESS);
 }
+
+//open sem_dead, table->amount
+//add while (index++ < table->amount){ wait(sem_dead) };
+//add each wait and post cover ft_philo_prtinf;

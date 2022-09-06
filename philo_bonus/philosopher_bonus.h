@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 20:00:44 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 21:24:14 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,14 @@
 # define SEMLIFE "/semaphore_lifetime"
 # define SEMFORK "/semaphore_fork"
 # define SEMDEAD "/semaphore_dead"
+# define SEPRINT "/semaphore_print"
 
 typedef struct s_table
 {
 	pthread_t			thread;
 	sem_t				*sem_fork;
 	sem_t				*sem_dead;
+	sem_t				*sem_print;
 	sem_t				**sem_lifetime;
 	unsigned long int	sec;
 	unsigned long int	micro;

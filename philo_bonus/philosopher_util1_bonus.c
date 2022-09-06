@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 20:05:05 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 21:32:23 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,11 @@ int	ft_free_resource(t_table *table, int mode)
 		pthread_detach(table->thread);
 		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(count));
 		sem_unlink(sem_life);
-		sem_close(table->sem_lifetime[count]);
+		sem_close(table->sem_lifetime[count++]);
 		free(sem_life);
-		count++;
 	}
+	sem_unlink(SEPRINT);
+	sem_close(table->sem_print);
 	sem_unlink(SEMDEAD);
 	sem_close(table->sem_dead);
 	sem_unlink(SEMFORK);
