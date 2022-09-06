@@ -6,13 +6,13 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 05:43:12 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 08:19:24 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher_bonus.h"
 
-/*
+/*dddddd
 void	*ft_philo_routine(void *elbat)
 {
 	t_table		*table;
@@ -58,6 +58,7 @@ int	ft_get_index(t_table *table)
 	return (index);
 }
 */
+/*
 void	*ft_philo_mealcount(void *elbat)
 {
 	int		count;
@@ -80,7 +81,7 @@ void	*ft_philo_mealcount(void *elbat)
 	}
 	table->philo_status = FULL;
 	return (0);
-}
+}*/
 
 void	*ft_philo_lifetime(void *elbat)
 {
@@ -106,10 +107,10 @@ void	*ft_philo_lifetime(void *elbat)
 				ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
 //				printf("(lifetime)kill) count = %d\n", table->count);
 //				kill(table->pid[table->count - 1], SIGINT);
-				exit(0);
+				exit(EXIT_FAILURE);
 			}
-			if (((t_table *)table)->philo_status == FULL)
-				return (0);
+//			if (((t_table *)table)->philo_status == FULL)
+//				return (0);
 //		}
 	}
 	return (0);

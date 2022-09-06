@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 05:26:39 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 08:01:10 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,10 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode);
 void				ft_philo_printf(t_table *table, int index, int mode);
 void				ft_isleepnow(unsigned long int behave);
 void				ft_check_argurment(int argc, char **argv);
+void				ft_philo_routine(t_table *table);
 //void				ft_create_philo(t_table *table, int amount, int count);
 void				*ft_philo_lifetime(void *elbat);
 void				*ft_philo_mealcount(void *elbat);
-void				*ft_philo_routine(void *elbat);
 t_table				*ft_table_init(t_table *table, char **argv, int index);
 int					ft_free_resource(t_table *table, int mode);
 int					ft_get_index(t_table *table);

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 05:54:58 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 07:29:40 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,6 @@ int	ft_free_resource(t_table *table, int mode)
 	char	*sem_life;
 
 	count = 0;
-	if (table->philo_status == FULL)
-		printf("=> \033[0;36mall philosophers are full :)\nnumber"
-			" of times_to_eat is reached...\033[0m\n");
 	while (count < table->amount)
 	{
 		pthread_detach(table->philo[count].thread);
