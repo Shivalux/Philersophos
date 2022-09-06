@@ -6,86 +6,14 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 19:23:42 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 20:11:55 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher_bonus.h"
 
-/*dddddd
-void	*ft_philo_routine(void *elbat)
-{
-	t_table		*table;
-	int			i;
-
-	table = (t_table *)elbat;
-	i = ft_get_index(table);
-	while (1 > 0)
-	{
-		pthread_mutex_lock(&table->philo[i].mutex_fork);
-		ft_philo_printf(table, i + 1, FORK_TAKEN);
-		pthread_mutex_lock(&table->philo[(i + 1) % table->amount].mutex_fork);
-		ft_philo_printf(table, i + 1, FORK_TAKEN);
-		ft_philo_printf(table, i + 1, EAT);
-		ft_isleepnow(table->eat);
-		pthread_mutex_lock(&table->philo[i].mutex_lifetime);
-		table->philo[i].life = table->life_time;
-		pthread_mutex_unlock(&table->philo[i].mutex_lifetime);
-		table->philo[i].meal++;
-		pthread_mutex_unlock(&table->philo[i].mutex_fork);
-		pthread_mutex_unlock(&table->philo[(i + 1) % table->amount].mutex_fork);
-		ft_philo_printf(table, i + 1, SLEEP);
-		ft_isleepnow(table->sleep);
-		ft_philo_printf(table, i + 1, THINK);
-	}
-}
-
-int	ft_get_index(t_table *table)
-{
-	static int	count = 0;
-	int			index;
-
-	if (count + 1 > table->amount)
-		count = 1;
-	index = count;
-	if (count + 2 != table->amount)
-		count += 2;
-	else
-		count++;
-	while (table->philo_status == SLEEP)
-	{
-	}
-	return (index);
-}
-*/
-/*
-void	*ft_philo_mealcount(void *elbat)
-{
-	int		count;
-	int		index;
-	t_table	*table;
-
-	table = (t_table *)elbat;
-	count = 0;
-	while (count != table->amount)
-	{
-		index = 0;
-		count = 0;
-		while (index < table->amount)
-		{
-		//	printf("philo[%d].meal == %d\n", index, table->philo[index].meal);
-			if (table->philo[index].meal >= table->meal)
-				count++;
-			index++;
-		}
-	}
-	table->philo_status = FULL;
-	return (0);
-}*/
-
 void	*ft_philo_lifetime(void *elbat)
 {
-//	int	i;
 	t_table	*table;
 
 	table = (t_table *)elbat;
@@ -93,28 +21,16 @@ void	*ft_philo_lifetime(void *elbat)
 	while (0 < 1)
 	{
 		ft_isleepnow(1000);
-//		i = -1;
-//		while (++i < ((t_table *)table)->amount)
-//		{
-		//	pthread_mutex_lock(&((t_table *)table)->philo[i].mutex_lifetime);
-			sem_wait(((t_table *)table)->sem_lifetime[table->count]);
-			((t_table *)table)->life -= 1000;
-			sem_post(((t_table *)table)->sem_lifetime[table->count]);
-		//	sem_post(((t_table *)table)->philo[table->count].sem_lifetime);
-		//	pthread_mutex_unlock(&((t_table *)table)->philo[i].mutex_lifetime);
-			if (((t_table *)table)->life <= 0)
-			{
-				sem_wait(table->sem_dead);
-				((t_table *)table)->philo_status = DEAD;
-				ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
-//				printf("(lifetime)kill) count = %d\n", table->count);
-//				kill(table->pid[table->count - 1], SIGINT);
-				exit(EXIT_SUCCESS);	
-			//	exit(table->count + 1);
-			}
-//			if (((t_table *)table)->philo_status == FULL)
-//				return (0);
-//		}
+		sem_wait(((t_table *)table)->sem_lifetime[table->count]);
+		((t_table *)table)->life -= 1000;
+		sem_post(((t_table *)table)->sem_lifetime[table->count]);
+		if (((t_table *)table)->life <= 0)
+		{
+			sem_wait(table->sem_dead);
+			((t_table *)table)->philo_status = DEAD;
+			ft_philo_printf(((t_table *)table), table->count + 1, DEAD);
+			exit(1);
+		}
 	}
 	return (0);
 }

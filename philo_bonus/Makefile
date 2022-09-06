@@ -6,7 +6,7 @@
 #    By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/08 00:28:26 by sharnvon          #+#    #+#              #
-#    Updated: 2022/09/06 00:00:46 by sharnvon         ###   ########.fr        #
+#    Updated: 2022/09/06 20:13:26 by sharnvon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,9 +40,11 @@ all: $(OBJS)
 	@echo "  $(RED)-->$(RESET) $(GREEN)Library file was made....$(RESET)$(RED)<--$(RESET)"
 	$(CC) $(CFLAGS) $(PTHREAD) $(LIB) -o $(NAME)
 	@echo "  $(RED)-->$(RESET) $(GREEN)Program \"philo_bonus\" complied :)$(RESET) $(RED)<--$(RESET)"
-
 .PHONY: all
 
+bonus: all
+.PHONY: bonus
+	
 norminette:
 	$(NORM) $(NFLAG_C) $(SRCS)
 	$(NORM) $(NFLAG_H) $(HEAD)

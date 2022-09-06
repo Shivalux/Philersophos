@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 19:24:11 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 20:25:38 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,9 @@ void	ft_check_arguments(int argc, char **argv)
 	}
 }
 
-/* function initialise the t_table structure */
-t_table	*ft_table_init(t_table *table, char **argv, int index)
-{
-	char	*sem_life;
 
+t_table	*ft_allocate_data(t_table *table, char **argv)
+{
 	table = (t_table *)ft_calloc(sizeof(t_table), 1);
 	if (table == NULL)
 		return (0);
@@ -65,24 +63,51 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 		free(table);
 		return (0);
 	}
+	return (table);
+}
+
+/* function initialise the t_table structure */
+t_table	*ft_table_init(t_table *table, char **argv, int index)
+{
+	char	*sem_life;
+
+	table = ft_allocate_data(table, argv);
+	if (table == NULL)
+		return (0);
+/*	table = (t_table *)ft_calloc(sizeof(t_table), 1);
+	if (table == NULL)
+		return (0);
+	table->amount = ft_atoi(argv[1]);
+	table->pid = (int *)ft_calloc(sizeof(int), table->amount);
+	if (table->pid == NULL)
+	{
+		free(table);
+		return (0);
+	}
+	table->sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table->amount);
+	if (table->sem_lifetime == NULL)
+	{
+		free(table->pid);
+		free(table);
+		return (0);
+	}*/
 	table->eat = ft_atoi(argv[3]) * 1000;
 	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
 	table->philo_status = SLEEP;
 	table->life = ft_atoi(argv[2]) * 1000;
+	table->max_meal = -1;
 	if (argv[5] != NULL)
 		table->max_meal = ft_atoi(argv[5]);
-	else
-		table->max_meal = -1;
 	sem_unlink(SEMDEAD);
 	table->sem_dead = sem_open(SEMDEAD, O_CREAT | O_EXCL, 0644, 1);
 	sem_unlink(SEMFORK);
 	table->sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table->amount);
 	while (index < table->amount)
 	{
-		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index)); //
-		sem_unlink(sem_life); //
-		table->sem_lifetime[index++] = sem_open(sem_life , O_CREAT | O_EXCL, 0644, 1);
+		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(index));
+		sem_unlink(sem_life);
+		table->sem_lifetime[index++] = sem_open(sem_life, O_CREAT | O_EXCL, 0644, 1);
 		free(sem_life);
 	}
 	return (table);
@@ -90,9 +115,9 @@ t_table	*ft_table_init(t_table *table, char **argv, int index)
 
 void	ft_philo_routine(t_table *table)
 {
-	pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
-	pthread_detach(table->thread);
-	while (table->philo_status == SLEEP);
+	while (table->philo_status == SLEEP)
+	{
+	}
 	if (table->count > table->amount / 2)
 		ft_isleepnow(table->eat);
 	while (table->philo_status != DEAD)
@@ -140,26 +165,14 @@ int	ft_create_philosopher(t_table *table)
 
 void	ft_waiting_child(t_table *table, int count)
 {
-	int status;
-	int meal;
-//	int dead;
+	int	status;
+	int	meal;
 
-//	dead = 0;
 	meal = 0;
-//	pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
-//	pthread_detach(table->thread);
 	while (waitpid(-1, &status, 0) != -1 || errno != ECHILD)
 	{
-		if (WEXITSTATUS(status) <= 1)
+		if (WEXITSTATUS(status) == 1)
 		{
-//			if (dead == 0)
-//			{
-//				ft_philo_printf(table, WEXITSTATUS(status), DEAD);
-//				printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;"
-//					"31mdied.\033[0m\n", ft_timestamp_cal(table, TIME_CAL), 
-//						WEXITSTATUS(status));
-//				dead++;
-//			}
 			while (--count >= 0)
 				kill(table->pid[count], SIGINT);
 		}
@@ -186,9 +199,10 @@ int	main(int argc, char **argv)
 	count = ft_create_philosopher(table);
 	if (count < table->amount && table->pid[count] == 0)
 	{
+		pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
+		pthread_detach(table->thread);
 		table->count = count;
-	//	ft_isleepnow(count * 50);
-		ft_philo_routine(table);	
+		ft_philo_routine(table);
 	}
 	else
 	{

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 15:42:24 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 19:22:28 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 20:05:05 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,6 @@ int	ft_free_resource(t_table *table, int mode)
 		sem_unlink(sem_life);
 		sem_close(table->sem_lifetime[count]);
 		free(sem_life);
-//		pthread_mutex_destroy(&table->philo[count].mutex_fork);
-//		pthread_mutex_destroy(&table->philo[count].mutex_lifetime);
 		count++;
 	}
 	sem_unlink(SEMDEAD);

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 22:31:27 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/05 23:59:08 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 20:11:19 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 int	ft_strslen(char *str1, char *str2)
 {
-	int count;
-	int tnuoc;
+	int	count;
+	int	tnuoc;
 
 	count = 0;
 	tnuoc = 0;
 	if (str1 == NULL)
 	{
-		printf("(ft_strslen: str1 == NULL :(\n");
 		return (-1);
 	}
 	while (str1[count] != '\0')
@@ -30,7 +29,6 @@ int	ft_strslen(char *str1, char *str2)
 	}
 	if (str2 == NULL)
 	{
-		printf("(ft_strslen: str2 == NULL :(\n");
 		return (count);
 	}
 	while (str2[tnuoc] != '\0')
@@ -69,7 +67,7 @@ char	*ft_strjoin(char *str1, char *str2)
 
 int	ft_digit_count(int number)
 {
-	int digit;
+	int	digit;
 
 	digit = 0;
 	while (number != 0)
