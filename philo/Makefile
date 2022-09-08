@@ -6,7 +6,7 @@
 #    By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/08 00:28:26 by sharnvon          #+#    #+#              #
-#    Updated: 2022/09/03 20:47:42 by sharnvon         ###   ########.fr        #
+#    Updated: 2022/09/08 09:57:41 by sharnvon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ LIB = philospher.a
 HEAD = philosopher.h
 SRCS = philosopher.c \
 	   philosopher_thread.c \
-	   philosopher_util.c
+	   philosopher_util.c \
+	   philosopher_helper.c
 OBJS = $(SRCS:.c=.o)
 
 RESET = \033[0m

@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 22:31:27 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 20:11:19 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:25:34 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,20 @@ void	ft_check_arguments(int argc, char **argv)
 
 	index = 1;
 	if (argc < 5 || argc > 6)
-	{
-		printf("ERROR: THE NUMBER OF THE AGUMENT IS WRONG :(\n");
-		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
-			" [time to sleep] [(optional): number of time to eat]\n");
-		exit(EXIT_FAILURE);
-	}
+		ft_error_printf(ARG_ERROR);
 	while (argv[index] != NULL)
 	{
 		xedni = 0;
 		while (argv[index][xedni] != '\0')
 		{
 			if (argv[index][xedni] < '0' || argv[index][xedni] > '9')
-			{
-				printf("ERROR: VALUE OF AGURMENTS MUST BE POSITIVE NUMBER..\n");
-				exit(EXIT_FAILURE);
-			}
+				ft_error_printf(VALUE_ERROR);
 			xedni++;
 		}
 		index++;
 	}
+	if (ft_atoi(argv[1]) == 0)
+		ft_error_printf(PHILO_ERROR);
 }
 
 int	ft_strslen(char *str1, char *str2)

@@ -6,70 +6,11 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 22:33:45 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:18:50 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher_bonus.h"
-
-// /* ./philo [number of philos] [time to die] [time to eat] [time to sleep] */
-// 	/* optional "number of time to eat" */
-// void	ft_check_arguments(int argc, char **argv)
-// {
-// 	int	index;
-// 	int	xedni;
-
-// 	index = 1;
-// 	if (argc < 5 || argc > 6)
-// 	{
-// 		printf("ERROR: THE NUMBER OF THE AGUMENT IS WRONG :(\n");
-// 		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
-// 			" [time to sleep] [(optional): number of time to eat]\n");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	while (argv[index] != NULL)
-// 	{
-// 		xedni = 0;
-// 		while (argv[index][xedni] != '\0')
-// 		{
-// 			if (argv[index][xedni] < '0' || argv[index][xedni] > '9')
-// 			{
-// 				printf("ERROR: VALUE OF AGURMENTS MUST BE POSITIVE NUMBER..\n");
-// 				exit(EXIT_FAILURE);
-// 			}
-// 			xedni++;
-// 		}
-// 		index++;
-// 	}
-// }
-
-// t_table	*ft_allocate_data(t_table *table, char **argv)
-// {
-// 	table = (t_table *)ft_calloc(sizeof(t_table), 1);
-// 	if (table == NULL)
-// 		return (0);
-// 	table->amount = ft_atoi(argv[1]);
-// 	table->pid = (int *)ft_calloc(sizeof(int), table->amount);
-// 	if (table->pid == NULL)
-// 	{
-// 		free(table);
-// 		return (0);
-// 	}
-// 	table->sem_lifetime = (sem_t **)ft_calloc(sizeof(sem_t *), table->amount);
-// 	if (table->sem_lifetime == NULL)
-// 	{
-// 		free(table->pid);
-// 		free(table);
-// 		return (0);
-// 	}
-// 	table->eat = ft_atoi(argv[3]) * 1000;
-// 	table->sleep = ft_atoi(argv[4]) * 1000;
-// 	table->life_time = ft_atoi(argv[2]) * 1000;
-// 	table->philo_status = SLEEP;
-// 	table->life = ft_atoi(argv[2]) * 1000;
-// 	table->max_meal = -1;
-// 	return (table);
-// }
 
 /* function initialise the t_table structure */
 t_table	*ft_table_init(t_table *table, char **argv, int i)

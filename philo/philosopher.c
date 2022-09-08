@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 22:50:15 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:09:42 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,53 +21,42 @@ void	ft_check_arguments(int argc, char **argv)
 
 	index = 1;
 	if (argc < 5 || argc > 6)
-	{
-		printf("ERROR: THE NUMBER OF THE AGUMENT IS WRONG :(\n");
-		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
-			" [time to sleep] [(optional): number of time to eat]\n");
-		exit(EXIT_FAILURE);
-	}
+		ft_error_printf(ARG_ERROR);
 	while (argv[index] != NULL)
 	{
 		xedni = 0;
 		while (argv[index][xedni] != '\0')
 		{
 			if (argv[index][xedni] < '0' || argv[index][xedni] > '9')
-			{
-				printf("ERROR: VALUE OF AGURMENTS MUST BE POSITIVE NUMBER..\n");
-				exit(EXIT_FAILURE);
-			}
+				ft_error_printf(VALUE_ERROR);
 			xedni++;
 		}
 		index++;
 	}
+	if (ft_atoi(argv[1]) == 0)
+		ft_error_printf(PHILO_ERROR);
 }
 
 /* function initialise the t_table structure */
 t_table	*ft_table_init(t_table *table, char **argv, int index)
 {
-	table = ft_calloc(sizeof(t_table), 1);
+	table = ft_allocate_table(table, argv);
 	if (table == NULL)
 		return (0);
-	table->philo = (t_philo *)ft_calloc(sizeof(t_philo), ft_atoi(argv[1]));
-	if (table->philo == NULL)
-	{
-		free(table);
-		return (0);
-	}
-	table->amount = ft_atoi(argv[1]);
 	table->eat = ft_atoi(argv[3]) * 1000;
 	table->sleep = ft_atoi(argv[4]) * 1000;
 	table->life_time = ft_atoi(argv[2]) * 1000;
 	table->philo_status = SLEEP;
 	table->meal = -1;
 	pthread_mutex_init(&table->mutex_index, NULL);
+	pthread_mutex_init(&table->mutex_status, NULL);
 	if (argv[5] != NULL)
 		table->meal = ft_atoi(argv[5]);
 	while (index < table->amount)
 	{
 		pthread_mutex_init(&table->philo[index].mutex_fork, NULL);
 		pthread_mutex_init(&table->philo[index].mutex_lifetime, NULL);
+		pthread_mutex_init(&table->philo[index].mutex_print, NULL);
 		table->philo[index++].life = ft_atoi(argv[2]) * 1000;
 	}
 	return (table);

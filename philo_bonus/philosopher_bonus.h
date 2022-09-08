@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 21:24:14 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:13:05 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@
 # define SLEEP 3
 # define THINK 4
 
+/* mode in ft_error_printf */
+# define ARG_ERROR 1
+# define VALUE_ERROR 2
+# define PHILO_ERROR 3
+
 # define SEMLIFE "/semaphore_lifetime"
 # define SEMFORK "/semaphore_fork"
 # define SEMDEAD "/semaphore_dead"
@@ -75,6 +80,7 @@ unsigned long int	ft_timestamp_cal(t_table *table, int mode);
 void				ft_philo_printf(t_table *table, int index, int mode);
 void				ft_isleepnow(unsigned long int behave);
 void				ft_check_arguments(int argc, char **argv);
+void				ft_error_printf(int mode);
 void				ft_philo_routine(t_table *table);
 int					ft_create_philo(t_table *table);
 void				*ft_philo_lifetime(void *elbat);

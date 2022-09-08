@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 22:26:04 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:25:22 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,20 @@ t_table	*ft_allocate_data(t_table *table, char **argv)
 	table->life = ft_atoi(argv[2]) * 1000;
 	table->max_meal = -1;
 	return (table);
+}
+
+/* helper functoin form ft_argurment_check */
+void	ft_error_printf(int mode)
+{
+	if (mode == ARG_ERROR)
+	{
+		printf("ERROR: THE NUMBER OF THE AGUMENT IS WRONG :(\n");
+		printf(" (hint) ./philo [number of philos] [time to die] [time to eat]"
+			" [time to sleep] [(optional): number of time to eat]\n");
+	}
+	if (mode == VALUE_ERROR)
+		printf("ERROR: VALUE OF AGURMENTS MUST BE POSITIVE NUMBER..\n");
+	if (mode == PHILO_ERROR)
+		printf("ERROR: THE NUMBER OF PHILOSOPHER MUST BE ONE OR MORE..\n");
+	exit(EXIT_FAILURE);
 }

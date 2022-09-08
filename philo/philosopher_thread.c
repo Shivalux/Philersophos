@@ -6,7 +6,7 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 16:07:42 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/03 23:30:48 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/08 10:09:05 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,9 @@ void	*ft_philo_mealcount(void *elbat)
 			index++;
 		}
 	}
+	pthread_mutex_lock(&table->mutex_status);
 	table->philo_status = FULL;
+	pthread_mutex_unlock(&table->mutex_status);
 	return (0);
 }
 
@@ -88,7 +90,7 @@ void	*ft_philo_lifetime(void *table)
 	int	i;
 
 	ft_timestamp_cal((t_table *)table, TIME_REGIS);
-	while (0 < 1)
+	while (((t_table *)table)->philo_status == ALIVE)
 	{
 		ft_isleepnow(1000);
 		i = -1;
@@ -97,14 +99,13 @@ void	*ft_philo_lifetime(void *table)
 			pthread_mutex_lock(&((t_table *)table)->philo[i].mutex_lifetime);
 			((t_table *)table)->philo[i].life -= 1000;
 			pthread_mutex_unlock(&((t_table *)table)->philo[i].mutex_lifetime);
+			pthread_mutex_lock(&((t_table *)table)->mutex_status);
 			if (((t_table *)table)->philo[i].life <= 0)
 			{
-				((t_table *)table)->philo_status = DEAD;
-				ft_philo_printf(((t_table *)table), i + 1, DEAD);
+				ft_philo_is_dead(table, i);
 				return (0);
 			}
-			if (((t_table *)table)->philo_status == FULL)
-				return (0);
+			pthread_mutex_unlock(&((t_table *)table)->mutex_status);
 		}
 	}
 	return (0);
@@ -112,6 +113,7 @@ void	*ft_philo_lifetime(void *table)
 
 void	ft_philo_printf(t_table *table, int index, int mode)
 {
+	pthread_mutex_lock(&table->philo[index - 1].mutex_print);
 	if (mode == FORK_TAKEN && table->philo_status == ALIVE)
 	{
 		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m has taken"
@@ -132,9 +134,5 @@ void	ft_philo_printf(t_table *table, int index, int mode)
 		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m is thinking.\n",
 			ft_timestamp_cal(table, TIME_CAL), index);
 	}
-	else if (mode == DEAD && table->philo_status == DEAD)
-	{
-		printf("=> \033[0;33m%lu\033[0m ms, \033[0;36m%d\033[0m \033[0;31mdied."
-			"\033[0m\n", ft_timestamp_cal(table, TIME_CAL), index);
-	}
+	pthread_mutex_unlock(&table->philo[index - 1].mutex_print);
 }
