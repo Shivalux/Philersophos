@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosopher.h                                      :+:      :+:    :+:   */
+/*   philosopher_bonus.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:25 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/06 22:53:21 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/06 08:01:10 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHER_H
-# define PHILOSOPHER_H
+#ifndef PHILOSOPHER_BONUS_H
+# define PHILOSOPHER_BONUS_H
 
 # include <stdio.h>
 # include <string.h>
@@ -19,6 +19,10 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <semaphore.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <errno.h>
 
 /* mode in ft_timestamp_cal */
 # define TIME_REGIS 1
@@ -39,11 +43,16 @@
 # define SLEEP 3
 # define THINK 4
 
+# define SEMLIFE "/semaphore_lifetime"
+# define SEMFORK "/semaphore_fork"
+
+
 typedef struct s_philo
 {
 	pthread_t			thread;
-	pthread_mutex_t		mutex_fork;
-	pthread_mutex_t		mutex_lifetime;
+	sem_t				*sem_lifetime;
+//	pthread_mutex_t		mutex_fork;
+//	pthread_mutex_t		mutex_lifetime;
 	long int			life;
 	int					meal;
 }	t_philo;
@@ -52,7 +61,7 @@ typedef struct s_table
 {
 	t_philo				*philo;
 	pthread_t			thread;
-	pthread_mutex_t		mutex_index;
+	sem_t				*sem_fork;
 	unsigned long int	sec;
 	unsigned long int	micro;
 	unsigned long int	life_time;
@@ -61,6 +70,8 @@ typedef struct s_table
 	unsigned long int	philo_status;
 	int					amount;
 	int					meal;
+	pid_t				*pid;
+	int					count;
 }	t_table;
 
 void				*ft_calloc(int count, int size);
@@ -68,13 +79,16 @@ unsigned long int	ft_atoi(char *str);
 unsigned long int	ft_timestamp_cal(t_table *table, int mode);
 void				ft_philo_printf(t_table *table, int index, int mode);
 void				ft_isleepnow(unsigned long int behave);
-void				ft_check_arguments(int argc, char **argv);
-void				ft_create_philo(t_table *table, int amount, int count);
+void				ft_check_argurment(int argc, char **argv);
+void				ft_philo_routine(t_table *table);
+//void				ft_create_philo(t_table *table, int amount, int count);
 void				*ft_philo_lifetime(void *elbat);
 void				*ft_philo_mealcount(void *elbat);
-void				*ft_philo_routine(void *elbat);
 t_table				*ft_table_init(t_table *table, char **argv, int index);
 int					ft_free_resource(t_table *table, int mode);
 int					ft_get_index(t_table *table);
+int					ft_strslen(char *str1, char *str2);
+char				*ft_strjoin(char *str1, char *str2);
+char				*ft_positive_itoa(int number);
 
 #endif
