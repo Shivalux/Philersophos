@@ -6,44 +6,14 @@
 /*   By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 14:38:08 by sharnvon          #+#    #+#             */
-/*   Updated: 2022/09/08 10:18:50 by sharnvon         ###   ########.fr       */
+/*   Updated: 2022/09/09 23:40:57 by sharnvon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher_bonus.h"
 
-/* function initialise the t_table structure */
-t_table	*ft_table_init(t_table *table, char **argv, int i)
-{
-	char	*sem_life;
-
-	table = ft_allocate_data(table, argv);
-	if (table == NULL)
-		return (0);
-	if (argv[5] != NULL)
-		table->max_meal = ft_atoi(argv[5]);
-	sem_unlink(SEMDEAD);
-	table->sem_dead = sem_open(SEMDEAD, O_CREAT | O_EXCL, 0644, 1);
-	sem_unlink(SEMFORK);
-	table->sem_fork = sem_open(SEMFORK, O_CREAT | O_EXCL, 0644, table->amount);
-	sem_unlink(SEPRINT);
-	table->sem_print = sem_open(SEPRINT, O_CREAT | O_EXCL, 0644, table->amount);
-	while (i < table->amount)
-	{
-		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(i));
-		sem_unlink(sem_life);
-		table->sem_lifetime[i] = sem_open(sem_life, O_CREAT | O_EXCL, 0644, 1);
-		free(sem_life);
-		i++;
-	}
-	return (table);
-}
-
 void	ft_philo_routine(t_table *table)
 {
-	while (table->philo_status == SLEEP)
-	{
-	}
 	if (table->count > table->amount / 2)
 		ft_isleepnow(table->eat);
 	while (table->philo_status != DEAD)
@@ -60,8 +30,10 @@ void	ft_philo_routine(t_table *table)
 		table->meal++;
 		sem_post(table->sem_fork);
 		sem_post(table->sem_fork);
+		sem_wait(table->sem_status[table->count]);
 		if (table->max_meal != -1 && table->meal >= table->max_meal)
-			break ;
+			exit (0);
+		sem_post(table->sem_status[table->count]);
 		ft_philo_printf(table, table->count + 1, SLEEP);
 		ft_isleepnow(table->sleep);
 		ft_philo_printf(table, table->count + 1, THINK);
@@ -95,12 +67,14 @@ void	ft_waiting_child(t_table *table, int count)
 	int	meal;
 
 	meal = 0;
-	while (waitpid(-1, &status, 0) != -1 || errno != ECHILD)
+	while (waitpid(-1, &status, 0) != -1)
 	{
 		if (WEXITSTATUS(status) == 1)
 		{
 			while (--count >= 0)
-				kill(table->pid[count], SIGINT);
+			{
+				kill(table->pid[count], SIGKILL);
+			}
 		}
 		else if (WEXITSTATUS(status) == 0)
 			meal++;
@@ -125,14 +99,15 @@ int	main(int argc, char **argv)
 	count = ft_create_philosopher(table);
 	if (count < table->amount && table->pid[count] == 0)
 	{
+		table->count = count;
 		pthread_create(&table->thread, NULL, &ft_philo_lifetime, (void *)table);
 		pthread_detach(table->thread);
-		table->count = count;
+		while (table->philo_status == SLEEP)
+		{
+		}
 		ft_philo_routine(table);
 	}
 	else
-	{
 		ft_waiting_child(table, count);
-	}
 	return (EXIT_SUCCESS);
 }

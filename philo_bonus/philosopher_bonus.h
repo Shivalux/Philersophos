@@ -52,6 +52,7 @@
 # define SEMFORK "/semaphore_fork"
 # define SEMDEAD "/semaphore_dead"
 # define SEPRINT "/semaphore_print"
+# define SESTATE "/semaphore_status"
 
 typedef struct s_table
 {
@@ -60,6 +61,7 @@ typedef struct s_table
 	sem_t				*sem_dead;
 	sem_t				*sem_print;
 	sem_t				**sem_lifetime;
+	sem_t				**sem_status;
 	unsigned long int	sec;
 	unsigned long int	micro;
 	unsigned long int	life_time;
@@ -83,10 +85,12 @@ void				ft_check_arguments(int argc, char **argv);
 void				ft_error_printf(int mode);
 void				ft_philo_routine(t_table *table);
 int					ft_create_philo(t_table *table);
+void				ft_semaphore_loopclose(t_table *table);
 void				*ft_philo_lifetime(void *elbat);
 void				*ft_philo_mealcount(void *elbat);
 t_table				*ft_table_init(t_table *table, char **argv, int i);
-t_table				*ft_allocate_data(t_table *table, char **argv);
+t_table				*ft_allocate_data(t_table *table, int amount);
+t_table				*ft_semaphore_loopinnit(t_table *table, int i);
 int					ft_free_resource(t_table *table, int mode);
 int					ft_get_index(t_table *table);
 int					ft_strslen(char *str1, char *str2);

@@ -90,31 +90,41 @@ void	ft_isleepnow(unsigned long int behave)
 	}
 }
 
-int	ft_free_resource(t_table *table, int mode)
-{
-	int		count;
-	char	*sem_life;
+// int	ft_free_resource(t_table *table, int mode)
+// {
+// 	ft_semaphore_loopclose(table);
+// 	sem_unlink(SEPRINT);
+// 	sem_close(table->sem_print);
+// 	sem_unlink(SEMDEAD);
+// 	sem_close(table->sem_dead);
+// 	sem_unlink(SEMFORK);
+// 	sem_close(table->sem_fork);
+// 	pthread_detach(table->thread);
+// 	free(table->pid);
+// 	free(table->sem_lifetime);
+// 	free(table);
+// 	if (mode == FAILURE)
+// 		exit(EXIT_FAILURE);
+// 	return (0);
+// }
 
-	count = 0;
-	while (count < table->amount)
-	{
-		pthread_detach(table->thread);
-		sem_life = ft_strjoin(SEMLIFE, ft_positive_itoa(count));
-		sem_unlink(sem_life);
-		sem_close(table->sem_lifetime[count++]);
-		free(sem_life);
-	}
-	sem_unlink(SEPRINT);
-	sem_close(table->sem_print);
-	sem_unlink(SEMDEAD);
-	sem_close(table->sem_dead);
-	sem_unlink(SEMFORK);
-	sem_close(table->sem_fork);
-	pthread_detach(table->thread);
-	free(table->pid);
-	free(table->sem_lifetime);
-	free(table);
-	if (mode == FAILURE)
-		exit(EXIT_FAILURE);
-	return (0);
-}
+// void	ft_semaphore_loopclose(t_table *table)
+// {
+// 	int		count;
+// 	char	*semaphore;
+
+// 	count = 0;
+// 	while (count < table->amount)
+// 	{
+// 		pthread_detach(table->thread);
+// 		semaphore = ft_strjoin(SESTATE, ft_positive_itoa(count));
+// 		sem_unlink(semaphore);
+// 		sem_close(table->sem_status[count]);
+// 		free(semaphore);
+// 		semaphore = ft_strjoin(SEMLIFE, ft_positive_itoa(count));
+// 		sem_unlink(semaphore);
+// 		sem_close(table->sem_lifetime[count]);
+// 		free(semaphore);
+// 		count++;
+// 	}
+// }

@@ -6,7 +6,7 @@
 #    By: sharnvon <sharnvon@student.42bangkok.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/08 00:28:26 by sharnvon          #+#    #+#              #
-#    Updated: 2022/09/06 22:46:45 by sharnvon         ###   ########.fr        #
+#    Updated: 2022/09/08 21:34:43 by sharnvon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,12 +20,13 @@ NFLAG_H = -R CheckDefine
 
 
 NAME = philo_bonus
-LIB = philospher_bonus.a
+LIB = philosopher_bonus.a
 HEAD = philosopher_bonus.h
 SRCS = philosopher_bonus.c \
 	   philosopher_thread_bonus.c \
 	   philosopher_util1_bonus.c \
-	   philosopher_util2_bonus.c
+	   philosopher_util2_bonus.c \
+	   philosopher_initialise.c
 OBJS = $(SRCS:.c=.o)
 
 RESET = \033[0m
@@ -41,6 +42,8 @@ all: $(OBJS)
 	$(CC) $(CFLAGS) $(PTHREAD) $(LIB) -o $(NAME)
 	@echo "  $(RED)-->$(RESET) $(GREEN)Program \"philo_bonus\" complied :)$(RESET) $(RED)<--$(RESET)"
 .PHONY: all
+
+$(NAME): all
 
 bonus: all
 .PHONY: bonus
